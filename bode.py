@@ -149,7 +149,19 @@ def getPoleYPhaseValues(pole, values):
 
 def adjustAngles(angles):
     for i in range(len(angles)):
+        while(angles[i]>=360):
+            angles[i]-=360
+        while(angles[i]<=-360):
+            angles[i]+=360
+
         if(angles[i]>180):
+            angles[i]-=360
+        if(i!=0 and angles[i-1]<0 and angles[i]==180):
+            angles[i]-=360
+        
+        if(angles[i]<-180):
+            angles[i]+=360
+        if(i!=0 and angles[i-1]>0 and angles[i]==-180):
             angles[i]-=360
     return angles
 
@@ -216,8 +228,9 @@ def bodePlot():
 
     fig.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
 
-    xvalues=zeroes+poles
-    if(len(constants)==0 and len(xvalues)==0):
+    abs_constants=[abs(i) for i in constants]
+    xvalues=zeroes+poles+abs_constants
+    if(len(xvalues)==0):
         print("There are missing parameters")
         return 0 
 
@@ -240,7 +253,7 @@ def bodePlot():
     xvalues=list(set(xvalues))
     xvalues.sort() 
     yticksdB=[20*i for i in range(smallestExponent, largestExponent)]
-    yticksDeg=[-180, -90, -45, 0, 45, 90, 135, 180]
+    yticksDeg=[-180, -135, -90, -45, 0, 45, 90, 135, 180]
 
     ax[0].set_xticks(xvalues)
     ax[0].set_yticks(yticksdB)
